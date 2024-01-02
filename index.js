@@ -50,30 +50,39 @@ const updateAge = () =>{
     Minute.innerHTML = makeTwoDigit(minute);
     Second.innerHTML = makeTwoDigit(second);
 }; 
-const dobHandle = () => {
-    const dataString = dobInput.value;
-    dbBirth = dataString ? new Date(dataString) : null;
-
+const localStorageGetter = () =>{
     const year = localStorage.getItem("year");
     const month = localStorage.getItem("month");
     const date = localStorage.getItem("date");
     if(year && month && date){
         dbBirth = new Date(year, month, date);
     }
+    updateAge();
+}
+const contentToggler = () =>{
+    updateAge();
+    if(dbBirth){
+        startText.classList.add('hide');
+        afterText.classList.remove('hide');
+    }
+    else{
+        afterText.classList.add('hide');
+        startText.classList.remove('hide');
+    }
+};
+const dobHandle = () => {
+    const dataString = dobInput.value;
+    dbBirth = dataString ? new Date(dataString) : null;
+
     if(dbBirth){
         localStorage.setItem("year", dbBirth.getFullYear());
         localStorage.setItem("month",dbBirth.getMonth());
         localStorage.setItem("date",dbBirth.getDate());
-        startText.classList.add('hide');
-        afterText.classList.remove('hide');
-        setInterval(() => updateAge(), 1000);
-    }else{
-        afterText.classList.add('hide');
-        startText.classList.remove('hide');
     }
-    console.log("date is ",dbBirth);
+    contentToggler();
+    setInterval(() => updateAge(), 1000);
 };
-dobHandle();
-
+localStorageGetter();
+contentToggler();
 settingIcon.addEventListener('click',toggleDate);
 dobButton.addEventListener('click',dobHandle);
